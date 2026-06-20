@@ -9,7 +9,7 @@ def get_files_info(working_directory: str, directory: str = ".") -> str:
 
     # path validation 
     if common_path != working_dir_abs_path:
-        return f'Error: Cannot list "{directory}", as it is outside permitted directory ({working_dir_abs_path})'
+        return f'Error: Cannot list "{directory}", as it is outside permitted working directory ({working_dir_abs_path})'
     if not os.path.isdir(target_dir):
         return f'Error: {directory} is not a directory'
 
