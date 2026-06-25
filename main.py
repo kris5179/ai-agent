@@ -30,6 +30,10 @@ def main() -> None:
         config=types.GenerateContentConfig(
             system_instruction=system_prompt,
             temperature=0
+            # 0.0 – 0.2 (Deterministic & Logical): Best for coding, data extraction, math, and generating JSON/SQL. The output is factual and exactly repeatable.
+            # 0.3 – 0.7 (Balanced & Focused): Best for general Q&A, customer support, and text summarization. It balances logical structure with slight conversational variety.
+            # 0.7 – 1.0 (Creative & Diverse): Best for brainstorming, storytelling, and copywriting. It allows for imaginative word choices and unexpected ideas.
+            # 1.2+ (Highly Random): Pushes the model to be highly experimental, but often results in incoherent, nonsensical, or off-topic hallucinations.
         )
     )
 
