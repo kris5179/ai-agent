@@ -24,3 +24,18 @@ def get_file_content(working_directory: str, file: str) -> str:
         return f"Error: {err}"
 
     return file_content_string
+
+from google.genai import types
+schema_get_file_content = types.FunctionDeclaration(
+    name="get_file_content",
+    description="Read up to 10000 characters of a file",
+    parameters=types.Schema(
+        type=types.Type.OBJECT,
+        properties={
+            "file": types.Schema(
+                type=types.Type.STRING,
+                description="File to be read, up to 10000 characters max, the path to the file is relative to working directory",
+            ),
+        },
+    ),
+)

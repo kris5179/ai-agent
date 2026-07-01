@@ -22,3 +22,23 @@ def write_file(working_directory: str, file: str, content: str) -> str:
         return f"Error: {err}"
 
     return f'Successfully wrote to "{target_file}" ({len(content)} characters written)'
+
+from google.genai import types
+schema_write_file = types.FunctionDeclaration(
+    name="write_file",
+    description="Writes to a file",
+    parameters=types.Schema(
+        type=types.Type.OBJECT,
+        properties={
+            # working_directory: str, file: str, content: str
+            "file": types.Schema(
+                type=types.Type.STRING,
+                description="File to be written in/created",
+            ),
+            "content": types.Schema(
+                type=types.Type.STRING,
+                description="Content to be written to the given file",
+            ),
+        },
+    ),
+)

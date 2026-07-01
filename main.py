@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 from google import genai
 from google.genai import types
 from prompts import system_prompt
+from call_function import available_functions, call_function
 
 def main() -> None:
     load_dotenv()
@@ -29,7 +30,8 @@ def main() -> None:
         contents=messages, 
         config=types.GenerateContentConfig(
             system_instruction=system_prompt,
-            temperature=0
+            temperature=1,
+            tools=[available_functions]
             # 0.0 – 0.2 (Deterministic & Logical): Best for coding, data extraction, math, and generating JSON/SQL. The output is factual and exactly repeatable.
             # 0.3 – 0.7 (Balanced & Focused): Best for general Q&A, customer support, and text summarization. It balances logical structure with slight conversational variety.
             # 0.7 – 1.0 (Creative & Diverse): Best for brainstorming, storytelling, and copywriting. It allows for imaginative word choices and unexpected ideas.
@@ -37,20 +39,38 @@ def main() -> None:
         )
     )
 
+
     if not response.usage_metadata:
         raise RuntimeError("api response failed")
 
     prompt_tokens = response.usage_metadata.prompt_token_count
     response_tokens = response.usage_metadata.candidates_token_count
 
+
+    function_results = []
+    if response.function_calls:
+        for function_call in response.function_calls:
+            function_call_result = call_function(function_call)
+            if not function_call_result.parts:
+                raise Exception("function_call_result.parts is empty")
+            if function_call_result.parts[0].function_response is None:
+                raise Exception("function_call_result.parts[0].function_response is None")
+            if function_call_result.parts[0].function_response.response is None:
+                raise Exception("function_call_result.parts[0].function_response.response is None")
+            function_results.append(function_call_result.parts[0].function_response.response)
+            if args.verbose:
+                print(f"-> {function_call_result.parts[0].function_response.response}")
+
+
+    else:
+        print(f"Response:")
+        print(response.text)
+
+
     if args.verbose:
         print(f"User prompt: {args.user_prompt}")
         print(f"Prompt tokens: {prompt_tokens}")
         print(f"Response tokens: {response_tokens}")
-
-    print(f"Response:")
-    print(response.text)
-
 
 if __name__ == "__main__":
     main()

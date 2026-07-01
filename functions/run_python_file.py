@@ -33,5 +33,23 @@ def run_python_file(
     except Exception as err_msg:
         return f"Error: executing python file: {err_msg}"
 
-            
+from google.genai import types
+schema_run_python_file = types.FunctionDeclaration(
+    name="run_python_file",
+    description="Runs a python file. You can add multiple arguments to it, they will be appended at the end of command",
+    parameters=types.Schema(
+        type=types.Type.OBJECT,
+        properties={
+            # working_directory: str, file_path: str, args: list[str] | None = None
+            "file_path": types.Schema(
+                type=types.Type.STRING,
+                description="Path to the file which should be executed, it is relative to the working directory",
+            ),
+            "args": types.Schema(
+                type=types.Type.STRING,
+                description="Optional arguments to pass to the command which should be executed",
+            ),
+        },
+    ),
+)
 
